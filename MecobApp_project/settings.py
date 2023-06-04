@@ -1,14 +1,17 @@
 import os
 from pathlib import Path
+#?importando o dotenv e carregando as variaveis de ambiente
+import dotenv
+variaveis_de_ambiente = dotenv.get_variables('./.env')
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = '@o4%qra67xw&12e1kessjj!gfp6(2jtj)b1aewgez1^i*%rqen'
 
-SECRET_KEY = 'django-insecure-@o4%qra67xw&12e1kessjj!gfp6(2jtj)b1aewgez1^i*%rqen'
+DEBUG = variaveis_de_ambiente.get('DEBUG', False) == 'True'
 
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']#!habiliatndo qualquer link para puxar dados, alterar depois
 
 
 # Application definition
@@ -20,8 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #?apps
+    'Core_app',
     #dependencias
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -54,20 +60,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MecobApp_project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if variaveis_de_ambiente.get('DB_ENGINE') and variaveis_de_ambiente.get('DB_ENGINE') == 'mysql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': variaveis_de_ambiente.get('DATABASE'),
+            'USER': variaveis_de_ambiente.get('USER'),
+            'PASSWORD': variaveis_de_ambiente.get('PASSWORD'),
+            'HOST': variaveis_de_ambiente.get('HOST'),
+            'PORT': variaveis_de_ambiente.get('PORT'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
 ]
@@ -111,8 +122,17 @@ MEDIA_ROOT = 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_FRAMEWORK = {
+""" REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+} """
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
