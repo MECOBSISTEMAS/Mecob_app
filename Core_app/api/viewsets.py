@@ -27,7 +27,7 @@ class PessoasModelViewSet(viewsets.ModelViewSet):
 
 #aplique a autenticação obrigatoria aqui
 
-class ContratosVendedorViewSets(viewsets.ViewSet):
+class ContratosVendedorViewSet(viewsets.ViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     contratos: Contratos.objects.none()
@@ -45,7 +45,7 @@ class ContratosVendedorViewSets(viewsets.ViewSet):
         queryset_serialized = ContratosModelSerializer(queryset)
         return Response(queryset_serialized.data)
     
-class ContratosCompradorViewSets(viewsets.ViewSet):
+class ContratosCompradorViewSet(viewsets.ViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     contratos: Contratos.objects.none()
