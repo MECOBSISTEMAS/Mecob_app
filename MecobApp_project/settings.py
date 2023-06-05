@@ -27,7 +27,9 @@ INSTALLED_APPS = [
     'Core_app',
     #dependencias
     'rest_framework',
+    'rest_framework.authtoken',
     'django_extensions',
+    'dj_rest_auth',
 ]
 
 MIDDLEWARE = [
@@ -134,5 +136,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ]
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    #? configuração da paginação por elementos
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,  # Número de elementos por página
 }
+
+""" REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'jwt-auth',
+} """

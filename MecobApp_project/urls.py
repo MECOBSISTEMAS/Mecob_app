@@ -10,6 +10,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     #acesso aos apps instanciados pelo django
     path('', include('Core_app.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
