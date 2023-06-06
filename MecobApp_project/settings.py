@@ -1,15 +1,18 @@
 import os
 from pathlib import Path
+import random
+import string
 #?importando o dotenv e carregando as variaveis de ambiente
 import dotenv
-variaveis_de_ambiente = dotenv.get_variables('./.env')
+dotenv.load_dotenv()
 
+gerador_de_caracteres = lambda quantidade: ''.join(random.choices(string.ascii_letters + string.digits, k=quantidade))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = '@o4%qra67xw&12e1kessjj!gfp6(2jtj)b1aewgez1^i*%rqen'
+SECRET_KEY = os.getenv('SECRET_KEY', gerador_de_caracteres(32))
 
-DEBUG = variaveis_de_ambiente.get('DEBUG', False) == 'True'
+DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = ['*']#!habiliatndo qualquer link para puxar dados, alterar depois
 
@@ -25,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #?apps
     'Core_app',
-    #dependencias
+    #?dependencias
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
@@ -62,15 +65,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MecobApp_project.wsgi.application'
 
-if variaveis_de_ambiente.get('DB_ENGINE') and variaveis_de_ambiente.get('DB_ENGINE') == 'mysql':
+if os.getenv('DB_ENGINE') and os.getenv('DB_ENGINE') == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': variaveis_de_ambiente.get('DATABASE'),
-            'USER': variaveis_de_ambiente.get('USER'),
-            'PASSWORD': variaveis_de_ambiente.get('PASSWORD'),
-            'HOST': variaveis_de_ambiente.get('HOST'),
-            'PORT': variaveis_de_ambiente.get('PORT'),
+            'NAME': os.getenv('DATABASE'),
+            'USER': os.getenv('USER'),
+            'PASSWORD': os.getenv('PASSWORD'),
+            'HOST': os.getenv('HOST'),
+            'PORT': os.getenv('PORT'),
         }
     }
 else:
