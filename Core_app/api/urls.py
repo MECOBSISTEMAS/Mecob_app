@@ -10,5 +10,7 @@ router.register('contratos', viewsets.ContratosModelViewSet, basename='contratos
 router.register('eventos', viewsets.EventosModelViewSet, basename='eventos')
 router.register('contratos-vendedor', viewsets.ContratosVendedorViewSet, basename='contratos-vendedor')
 router.register('contratos-comprador', viewsets.ContratosCompradorViewSet, basename='contratos-comprador')
+router.register('consulta-juridico', viewsets.ConsultaJuridicoViewSet, basename='consulta-juridico')
+router.register('recuperacao-credito', viewsets.RecuperacaoCreditoViewSet, basename='recuperacao-credito')
 urlpatterns = [
 ] + router.urls
