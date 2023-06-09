@@ -35,12 +35,12 @@ class ContratosVendedorViewSet(viewsets.ViewSet):
         self.contratos = Contratos.objects.filter(
             vendedor=Pessoas.objects.get(email=request.user.username),
             status='confirmado'
-        ).values('')
+        )
         queryset_serialized = {
             'contratos': ContratosModelSerializer(self.contratos, many=True).data
         }
         return Response(queryset_serialized)
-    
+
     def retrieve(self, request, pk):
         queryset = self.contratos.get(pk=pk)
         queryset_serialized = ContratosModelSerializer(queryset)
