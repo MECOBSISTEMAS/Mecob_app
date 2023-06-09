@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     #?dependencias
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_auth',
     'django_extensions',
     'dj_rest_auth',
 ]

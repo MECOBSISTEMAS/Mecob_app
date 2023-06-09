@@ -1,12 +1,4 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
 
 class AcessoPessoa(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -23,8 +15,10 @@ class AcessoPessoa(models.Model):
     caminho_arquivo = models.CharField(max_length=1000, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'acesso_pessoa'
+        verbose_name = 'Acesso Pessoa'
+        verbose_name_plural = 'Acesso Pessoas'
 
 
 class Alertas(models.Model):
@@ -40,7 +34,7 @@ class Alertas(models.Model):
     dt_prazo = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'alertas'
 
 
@@ -59,7 +53,7 @@ class Arquivos(models.Model):
     boletos_avulso = models.ForeignKey('BoletosAvulso', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'arquivos'
 
 
@@ -74,7 +68,7 @@ class BoletosAvulso(models.Model):
     descricao = models.CharField(max_length=1000, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'boletos_avulso'
 
 
@@ -85,7 +79,7 @@ class ContratoLote(models.Model):
     vl_lote = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'contrato_lote'
 
 
@@ -124,7 +118,7 @@ class ContratoParcelas(models.Model):
     dt_atualizacao_monetaria = models.DateField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'contrato_parcelas'
 
 
@@ -170,7 +164,7 @@ class Contratos(models.Model):
     animal = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'contratos'
 
 
@@ -191,7 +185,7 @@ class DadosArquivoRetorno(models.Model):
     fl_processado = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'dados_arquivo_retorno'
 
 
@@ -202,18 +196,18 @@ class Documentos(models.Model):
     contratos = models.ForeignKey(Contratos, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'documentos'
 
 
 class Eventos(models.Model):
-    nome = models.CharField(max_length=500, db_collation='utf8mb3_general_ci', blank=True, null=True)
+    nome = models.CharField(max_length=500, blank=True, null=True)
     leiloeiro = models.ForeignKey('Pessoas', models.DO_NOTHING)
     dt_evento = models.DateField()
-    tipo = models.CharField(max_length=200, db_collation='utf8mb3_general_ci', db_comment='(virtual, presencial, online)')
+    tipo = models.CharField(max_length=200, db_comment='(virtual, presencial, online)')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'eventos'
 
 
@@ -233,7 +227,7 @@ class Haras(models.Model):
     cep = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'haras'
 
 
@@ -243,7 +237,7 @@ class IndiceCgj(models.Model):
     vl_indice = models.DecimalField(max_digits=12, decimal_places=6)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'indice_cgj'
 
 
@@ -255,7 +249,7 @@ class LancamentosTed(models.Model):
     obs = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'lancamentos_ted'
 
 
@@ -266,7 +260,7 @@ class Lotes(models.Model):
     tipo = models.CharField(max_length=500)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'lotes'
 
 
@@ -277,7 +271,7 @@ class Modulo(models.Model):
     descricao = models.CharField(max_length=2000, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'modulo'
 
 
@@ -293,7 +287,7 @@ class Ocorrencias(models.Model):
     promessa_pagamento = models.DateField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'ocorrencias'
 
 
@@ -304,22 +298,23 @@ class Perfil(models.Model):
     fixo = models.CharField(max_length=1)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'perfil'
 
 
 class PerfilModulo(models.Model):
     id = models.BigAutoField(primary_key=True)
-    perfil = models.ForeignKey(Perfil, models.DO_NOTHING)
-    modulo = models.ForeignKey(Modulo, models.DO_NOTHING)
+    perfil = models.ForeignKey('Perfil', models.DO_NOTHING)
+    modulo = models.ForeignKey('Modulo', models.DO_NOTHING)
     visualizar = models.CharField(max_length=45, blank=True, null=True)
     adicionar = models.CharField(max_length=45, blank=True, null=True)
     editar = models.CharField(max_length=45, blank=True, null=True)
     conceder = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'perfil_modulo'
+
 
 
 class Pessoas(models.Model):
@@ -363,7 +358,7 @@ class Pessoas(models.Model):
     operador = models.CharField(max_length=1, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'pessoas'
 
 
@@ -398,7 +393,7 @@ class Protocolos(models.Model):
     ct_verifica = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'protocolos'
 
 
@@ -411,7 +406,7 @@ class ProtocolosEventos(models.Model):
     protocolos = models.ForeignKey(Protocolos, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'protocolos_eventos'
         unique_together = (('id', 'protocolos'),)
 
@@ -431,7 +426,7 @@ class ProtocolosServicos(models.Model):
     enable = models.PositiveIntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'protocolos_servicos'
 
 
@@ -443,7 +438,7 @@ class ProtocolosSetor(models.Model):
     protocolos = models.ForeignKey(Protocolos, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'protocolos_setor'
         unique_together = (('id', 'protocolos'),)
 
@@ -457,7 +452,7 @@ class RodizioClientes(models.Model):
     ativo = models.CharField(max_length=1, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'rodizio_clientes'
 
 
@@ -472,7 +467,7 @@ class SendMail(models.Model):
     prioridade = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'send_mail'
 
 
@@ -483,7 +478,7 @@ class SendMailDestinatarios(models.Model):
     send_mail = models.ForeignKey(SendMail, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'send_mail_destinatarios'
 
 
@@ -491,7 +486,7 @@ class Status(models.Model):
     descricao = models.CharField(unique=True, max_length=45)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'status'
 
 
@@ -520,5 +515,5 @@ class Teds(models.Model):
     log_zerar = models.CharField(max_length=500, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'teds'

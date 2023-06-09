@@ -1,6 +1,6 @@
 from rest_framework import viewsets, pagination
 from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
 from django.core import paginator
@@ -28,7 +28,7 @@ class PessoasModelViewSet(viewsets.ModelViewSet):
 #aplique a autenticação obrigatoria aqui
 
 class ContratosVendedorViewSet(viewsets.ViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
     contratos: Contratos.objects.none()
     def list(self, request):
@@ -47,7 +47,7 @@ class ContratosVendedorViewSet(viewsets.ViewSet):
         return Response(queryset_serialized.data)
     
 class ContratosCompradorViewSet(viewsets.ViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
     contratos: Contratos.objects.none()
     def list(self, request):
