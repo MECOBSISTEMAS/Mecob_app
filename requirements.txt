@@ -18,6 +18,7 @@ defusedxml
 dj-rest-auth
 Django
 django-extensions
+django-rest-auth
 djangorestframework
 executing
 fastjsonschema
@@ -70,8 +71,8 @@ python-dateutil
 python-dotenv
 python-json-logger
 pytz
-#pywin32
-#pywinpty
+pywin32
+pywinpty
 PyYAML
 pyzmq
 qtconsole
