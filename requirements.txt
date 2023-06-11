@@ -73,13 +73,12 @@ python-dateutil
 python-dotenv
 python-json-logger
 pytz
-#pywin32
-#pywinpty
+pywin32
+pywinpty
 PyYAML
 pyzmq
 qtconsole
 QtPy
-rest-framework-simplejwt
 rfc3339-validator
 rfc3986-validator
 Send2Trash
