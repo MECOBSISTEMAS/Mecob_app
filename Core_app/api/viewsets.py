@@ -46,6 +46,18 @@ class ContratosVendedorViewSet(viewsets.ViewSet):
         queryset_serialized = ContratosModelSerializer(queryset)
         return Response(queryset_serialized.data)
     
+class ContratosVendedorEmailViewSet(viewsets.ViewSet):
+    contratos = Contratos.objects.none()
+    def list(self, request, email):
+        self.contratos = Contratos.objects.filter(
+            vendedor=Pessoas.objects.get(email=request.user.username),
+            status='confirmado'
+        )
+        queryset_serialized = {
+            'contratos': ContratosModelSerializer(self.contratos, many=True).data
+        }
+        return Response(queryset_serialized)
+    
 class ContratosCompradorViewSet(viewsets.ViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
