@@ -20,6 +20,7 @@ Django
 django-extensions
 django-rest-auth
 djangorestframework
+djangorestframework-simplejwt
 executing
 fastjsonschema
 fqdn
@@ -66,13 +67,14 @@ pure-eval
 pycodestyle
 pycparser
 Pygments
+PyJWT
 pyrsistent
 python-dateutil
 python-dotenv
 python-json-logger
 pytz
-#pywin32
-#pywinpty
+pywin32
+pywinpty
 PyYAML
 pyzmq
 qtconsole

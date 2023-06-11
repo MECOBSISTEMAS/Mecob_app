@@ -140,6 +140,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     #? configuração da paginação por elementos
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
