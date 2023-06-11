@@ -17,6 +17,7 @@ decorator
 defusedxml
 dj-rest-auth
 Django
+django-cors-headers
 django-extensions
 django-rest-auth
 djangorestframework

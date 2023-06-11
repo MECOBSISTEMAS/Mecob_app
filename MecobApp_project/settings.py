@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'dj_rest_auth',
     'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -44,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'MecobApp_project.urls'
@@ -139,6 +141,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,  # Número de elementos por página
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
+#? Caso habilite como False, devera colocar a rota que é permitiddo o acesso
+""" 
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost:8000',
+) 
+"""
 
 """ REST_AUTH = {
     'USE_JWT': True,
