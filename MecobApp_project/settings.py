@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_extensions',
     'dj_rest_auth',
-    'rest_framework_simplejwt',
+    #'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
