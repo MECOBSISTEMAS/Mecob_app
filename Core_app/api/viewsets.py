@@ -50,7 +50,7 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
     contratos = Contratos.objects.none()
     def list(self, request, email):
         self.contratos = Contratos.objects.filter(
-            vendedor=Pessoas.objects.get(email=request.user.username),
+            vendedor=Pessoas.objects.get(email=email),
             status='confirmado'
         )
         queryset_serialized = {
