@@ -48,16 +48,13 @@ class ContratosVendedorViewSet(viewsets.ViewSet):
         return Response(queryset_serialized.data)
     
 class ContratosVendedorEmailViewSet(viewsets.ViewSet):
-    contratos = Contratos.objects.none()
 
     def list(self, request, email):
         contratos_queryset = Contratos.objects.filter(
             vendedor=Pessoas.objects.get(email=email),
             status='confirmado'
-        ).values(
-            'id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 
-            'status', 'suspenso', 'vendedor', 'comprador', 'eventos'
         )
+        #.values('id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 'status', 'suspenso', 'vendedor', 'comprador', 'eventos')
         contratos_serialized = ContratosModelSerializer(contratos_queryset, many=True).data
 
         for contrato in contratos_serialized:
@@ -67,6 +64,7 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
             )
             parcelas_serialized = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data
             contrato['parcelas'] = parcelas_serialized
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
 
         queryset_serialized = {
             'contratos': contratos_serialized
@@ -78,17 +76,17 @@ class ContratosCompradorViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     contratos: Contratos.objects.none()
     def list(self, request):
-        self.contratos = Contratos.objects.filter(
+        contratos = Contratos.objects.filter(
             comprador=Pessoas.objects.get(email=request.user.username),
             status='confirmado'
         )
         queryset_serialized = {
-            'contratos': ContratosModelSerializer(self.contratos, many=True).data
+            'contratos': ContratosModelSerializer(contratos, many=True).data
         }
         return Response(queryset_serialized)
     
     def retrive(self, request, pk):
-        queryset = self.contratos.get(pk=pk)
+        queryset = Contratos.objects.get(pk=pk)
         queryset_serialized = ContratosModelSerializer(queryset)
         return Response(queryset_serialized.data)
 
