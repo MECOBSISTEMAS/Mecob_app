@@ -3,6 +3,7 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
+from django.shortcuts import get_object_or_404
 from django.core import paginator
 from .serializers import (
     PessoasModelSerializer,
@@ -50,8 +51,9 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
     contratos = Contratos.objects.none()
 
     def list(self, request, email):
+        vendedor = get_object_or_404(Pessoas, email=email)
         contratos_queryset = Contratos.objects.filter(
-            vendedor=Pessoas.objects.get(email=email),
+            vendedor=vendedor,
             status='confirmado'
         ).values(
             'id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 
@@ -60,8 +62,10 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
         contratos_serialized = ContratosModelSerializer(contratos_queryset, many=True).data
 
         for contrato in contratos_serialized:
+            contrato_id = contrato['id']
             parcelas_queryset = ContratoParcelas.objects.filter(
-                contratos=contrato['id']).values(
+                contratos__id=contrato_id
+            ).values(
                 'dt_credito', 'vl_parcela'
             )
             parcelas_serialized = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data
