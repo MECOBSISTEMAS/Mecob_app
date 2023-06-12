@@ -61,7 +61,7 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
 
         for contrato in contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
-                contratos__id=contrato['id']).values(
+                contratos=contrato['id']).values(
                 'dt_credito', 'vl_parcela'
             )
             parcelas_serialized = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data
