@@ -51,9 +51,8 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
     contratos = Contratos.objects.none()
 
     def list(self, request, email):
-        vendedor = get_object_or_404(Pessoas, email=email)
         contratos_queryset = Contratos.objects.filter(
-            vendedor=vendedor,
+            vendedor=Pessoas.objects.get(email=email),
             status='confirmado'
         ).values(
             'id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 
@@ -62,11 +61,9 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
         contratos_serialized = ContratosModelSerializer(contratos_queryset, many=True).data
 
         for contrato in contratos_serialized:
-            contrato_id = contrato['id']
             parcelas_queryset = ContratoParcelas.objects.filter(
-                contratos__id=contrato_id
-            ).values(
-                'dt_credito', 'vl_parcela'
+                contratos=contrato['id']).values(
+                'dt_credito', 'vl_parcela', 'id'
             )
             parcelas_serialized = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data
             contrato['parcelas'] = parcelas_serialized
