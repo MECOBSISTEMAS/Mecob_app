@@ -21,7 +21,7 @@ class ContratoParcelasModelSerializer(serializers.ModelSerializer):
 class ContratosModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contratos
-        fields = ['id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 'status', 'vendedor', 'comprador', 'eventos']
+        fields = ['id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 'status', 'eventos']
         #fields = '__all__'
 
 class EventosModelSerializer(serializers.ModelSerializer):
