@@ -111,24 +111,19 @@ class ContratosCompradorViewSet(viewsets.ViewSet):
         return Response(queryset_serialized.data)
     
 class ContratosEmailStatusViewSet(viewsets.ViewSet):
-    
     def list(self, request, email:str, status:str):
         queryset_contratos = Contratos.objects.filter(
             vendedor=Pessoas.objects.get(email=email),
                status=status
         )
         queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
-        
+        print(queryset_contratos.count())
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
-            """ 
-                em_atraso: Em atraso conta a partir do primeiro dia em atraso
-                a_vencer: a vencer, o contrato ta em dia e a próxima parcela ainda não venceu
-                liquidado: Liquidado são os contratos quitados, que não possuem mais parcelas a vencer 
-            """
             parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
             parcelas_em_falta = parcelas_queryset.filter(vl_pagto=0).count()
+            contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
             if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
                 contrato['status_contrato'] = 'Em atraso'
             elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
@@ -140,11 +135,7 @@ class ContratosEmailStatusViewSet(viewsets.ViewSet):
             contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             
-        queryset_serialized = {
-            'contratos': queryset_contratos_serialized
-        }
-        
-        return Response(queryset_serialized)
+        return Response(queryset_contratos_serialized)
         
 
 class ConsultaJuridicoViewSet(viewsets.ViewSet):

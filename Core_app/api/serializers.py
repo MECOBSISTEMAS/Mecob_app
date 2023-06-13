@@ -9,7 +9,8 @@ from ..existing_models import (
 class PessoasModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pessoas
-        fields = '__all__'
+        fields = ['nome']
+        #fields = '__all__'
   
   
 class ContratoParcelasModelSerializer(serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class ContratoParcelasModelSerializer(serializers.ModelSerializer):
 class ContratosModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contratos
-        fields = ['id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 'status', 'eventos']
+        fields = ['id','descricao', 'dt_contrato', 'vl_contrato','nu_parcelas', 'status', 'eventos', 'comprador']
         #fields = '__all__'
 
 class EventosModelSerializer(serializers.ModelSerializer):
