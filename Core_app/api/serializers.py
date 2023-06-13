@@ -15,7 +15,7 @@ class PessoasModelSerializer(serializers.ModelSerializer):
 class ContratoParcelasModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContratoParcelas
-        fields = ['id','dt_vencimento', 'dt_credito', 'vl_parcela']
+        fields = ['id','dt_vencimento', 'dt_credito', 'vl_parcela', 'vl_pagto']
         #fields = '__all__'
   
 class ContratosModelSerializer(serializers.ModelSerializer):

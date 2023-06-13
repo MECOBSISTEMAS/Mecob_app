@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
 from django.shortcuts import get_object_or_404
 from django.core import paginator
+from datetime import datetime, date, timedelta
 from .serializers import (
     PessoasModelSerializer,
     ContratoParcelasModelSerializer,
@@ -121,8 +122,23 @@ class ContratosEmailStatusViewSet(viewsets.ViewSet):
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
-            contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
+            """ 
+                em_atraso: Em atraso conta a partir do primeiro dia em atraso
+                a_vencer: a vencer, o contrato ta em dia e a próxima parcela ainda não venceu
+                liquidado: Liquidado são os contratos quitados, que não possuem mais parcelas a vencer 
+            """
+            parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
+            parcelas_em_falta = parcelas_queryset.filter(vl_pagto=0).count()
+            if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'Em atraso'
+            elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'A vencer'
+            else:
+                contrato['status_contrato'] = 'Liquidado'
+                
+            contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
             contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             
         queryset_serialized = {
             'contratos': queryset_contratos_serialized
