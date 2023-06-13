@@ -230,7 +230,7 @@ class ContratosVendedorEmailStatusViewSet(viewsets.ViewSet):
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
             parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
-            parcelas_em_falta = parcelas_queryset.filter(vl_pagto=0).count()
+            parcelas_em_falta = parcelas_queryset.count()
             contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
             if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
                 contrato['status_contrato'] = 'Em atraso'
@@ -256,7 +256,7 @@ class ContratosCompradorEmailStatusViewSet(viewsets.ViewSet):
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
             parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
-            parcelas_em_falta = parcelas_queryset.filter(vl_pagto=0).count()
+            parcelas_em_falta = parcelas_queryset.count()
             contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
             if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
                 contrato['status_contrato'] = 'Em atraso'
