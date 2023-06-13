@@ -134,7 +134,7 @@ class ContratosEmailStatusViewSet(viewsets.ViewSet):
                 contrato['status_contrato'] = 'Liquidado'
                 
             contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
-            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.get(id=contrato['eventos']), many=False).data
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             
         return Response(queryset_contratos_serialized)
@@ -173,7 +173,7 @@ class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
                 contrato['status_contrato'] = 'Liquidado'
                 
             contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
-            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.get(id=contrato['eventos']), many=False).data
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             
         response.data['results'] = queryset_contratos_serialized
@@ -213,7 +213,7 @@ class ContratosParcelasCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
                 contrato['status_contrato'] = 'Liquidado'
                 
             contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
-            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.get(id=contrato['eventos']), many=False).data
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             
         response.data['results'] = queryset_contratos_serialized
@@ -240,7 +240,7 @@ class ContratosVendedorEmailStatusViewSet(viewsets.ViewSet):
                 contrato['status_contrato'] = 'Liquidado'
                 
             contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
-            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.get(id=contrato['eventos']), many=False).data
             #contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             
         return Response(queryset_contratos_serialized)
@@ -266,7 +266,7 @@ class ContratosCompradorEmailStatusViewSet(viewsets.ViewSet):
                 contrato['status_contrato'] = 'Liquidado'
                 
             contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
-            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.get(id=contrato['eventos']), many=False).data
             #contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             
         return Response(queryset_contratos_serialized)
