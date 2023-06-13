@@ -139,7 +139,7 @@ class ContratosEmailStatusViewSet(viewsets.ViewSet):
             
         return Response(queryset_contratos_serialized)
     
-class ContratosVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
+class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
     queryset = Contratos.objects.all()
     serializer_class = ContratosModelSerializer
     pagination_class = PageNumberPagination
@@ -179,7 +179,7 @@ class ContratosVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
         response.data['results'] = queryset_contratos_serialized
         return response
         
-class ContratosCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
+class ContratosParcelasCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
     queryset = Contratos.objects.all()
     serializer_class = ContratosModelSerializer
     pagination_class = PageNumberPagination
@@ -218,6 +218,59 @@ class ContratosCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
             
         response.data['results'] = queryset_contratos_serialized
         return response
+
+class ContratosVendedorEmailStatusViewSet(viewsets.ViewSet):
+    def list(self, request, email:str, status:str):
+        queryset_contratos = Contratos.objects.filter(
+            vendedor=Pessoas.objects.get(email=email),
+               status=status
+        )
+        queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
+        for contrato in queryset_contratos_serialized:
+            parcelas_queryset = ContratoParcelas.objects.filter(
+                contratos=contrato['id'])
+            parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
+            parcelas_em_falta = parcelas_queryset.filter(vl_pagto=0).count()
+            contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
+            if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'Em atraso'
+            elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'A vencer'
+            else:
+                contrato['status_contrato'] = 'Liquidado'
+                
+            contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            #contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
+            
+        return Response(queryset_contratos_serialized)
+    
+class ContratosCompradorEmailStatusViewSet(viewsets.ViewSet):
+    def list(self, request, email:str, status:str):
+        queryset_contratos = Contratos.objects.filter(
+            comprador=Pessoas.objects.get(email=email),
+               status=status
+        )
+        queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
+        for contrato in queryset_contratos_serialized:
+            parcelas_queryset = ContratoParcelas.objects.filter(
+                contratos=contrato['id'])
+            parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
+            parcelas_em_falta = parcelas_queryset.filter(vl_pagto=0).count()
+            contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
+            if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'Em atraso'
+            elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'A vencer'
+            else:
+                contrato['status_contrato'] = 'Liquidado'
+                
+            contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            #contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
+            
+        return Response(queryset_contratos_serialized)
+
     
 class DashBoardViewSet(viewsets.ViewSet):
     def list(self, request, email):

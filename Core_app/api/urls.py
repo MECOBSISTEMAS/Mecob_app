@@ -16,16 +16,20 @@ router.register('contratos-comprador-email/seu-email-aqui', viewsets.ContratosCo
 router.register('consulta-juridico', viewsets.ConsultaJuridicoViewSet, basename='consulta-juridico')
 router.register('recuperacao-credito', viewsets.RecuperacaoCreditoViewSet, basename='recuperacao-credito')
 router.register('contratos-email-status/seu-email-aqui', viewsets.ContratosEmailStatusViewSet, basename='contratos-email-status')
-router.register('contratos-vendedor-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosVendedorEmailStatusModelViewSet, basename='contratos-vendedor-email-status')
-router.register('contratos-comprador-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosCompradorEmailStatusModelViewSet, basename='contratos-comprador-email-status')
+router.register('contratos-parcelas-vendedor-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosParcelasVendedorEmailStatusModelViewSet, basename='contratos-parcelas-vendedor-email-status')
+router.register('contratos-parcelas-comprador-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosParcelasCompradorEmailStatusModelViewSet, basename='contratos-parcelas-comprador-email-status')
+router.register('contratos-vendedor-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosVendedorEmailStatusViewSet, basename='contratos-vendedor-email-status')
+router.register('contratos-comprador-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosCompradorEmailStatusViewSet, basename='contratos-comprador-email-status')
 router.register('dashboard/seu-email-aqui', viewsets.DashBoardViewSet, basename='dashboard')
 urlpatterns = [
   path('contratos-vendedor-email/<str:email>/', viewsets.ContratosVendedorEmailViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email'),
   path('contratos-comprador-email/<str:email>/', viewsets.ContratosCompradorEmailViewSet.as_view({'get': 'list'}), name='contratos-comprador-email'),
   path('contratos-email-status/<str:email>/<str:status>/', viewsets.ContratosEmailStatusViewSet.as_view({'get': 'list'}), name='contratos-email-status'),
-  path('contratos-vendedor-email-status/<str:email>/<str:status>/', viewsets.ContratosVendedorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email-status'),
-  path('contratos-comprador-email-status/<str:email>/<str:status>/', viewsets.ContratosCompradorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-comprador-email-status'),
-  path('dashboard/<str:email>', viewsets.DashBoardViewSet.as_view({'get': 'list'}), name='dashboard'),
+  path('contratos-parcelas-vendedor-email-status/<str:email>/<str:status>/', viewsets.ContratosParcelasVendedorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-parcelas-vendedor-email-status'),
+  path('contratos-parcelas-comprador-email-status/<str:email>/<str:status>/', viewsets.ContratosParcelasCompradorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-parcelas-comprador-email-status'),
+  path('contratos-comprador-email-status/<str:email>/<str:status>/', viewsets.ContratosCompradorEmailStatusViewSet.as_view({'get': 'list'}), name='contratos-comprador-email-status'),
+  path('contratos-vendedor-email-status/<str:email>/<str:status>/', viewsets.ContratosVendedorEmailStatusViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email-status'),
+  path('dashboard/<str:email>/', viewsets.DashBoardViewSet.as_view({'get': 'list'}), name='dashboard'),
   path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
   path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + router.urls
