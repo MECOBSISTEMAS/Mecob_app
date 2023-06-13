@@ -18,12 +18,14 @@ router.register('recuperacao-credito', viewsets.RecuperacaoCreditoViewSet, basen
 router.register('contratos-email-status/seu-email-aqui', viewsets.ContratosEmailStatusViewSet, basename='contratos-email-status')
 router.register('contratos-vendedor-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosVendedorEmailStatusModelViewSet, basename='contratos-vendedor-email-status')
 router.register('contratos-comprador-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosCompradorEmailStatusModelViewSet, basename='contratos-comprador-email-status')
+router.register('dashboard/seu-email-aqui', viewsets.DashBoardViewSet, basename='dashboard')
 urlpatterns = [
   path('contratos-vendedor-email/<str:email>/', viewsets.ContratosVendedorEmailViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email'),
   path('contratos-comprador-email/<str:email>/', viewsets.ContratosCompradorEmailViewSet.as_view({'get': 'list'}), name='contratos-comprador-email'),
   path('contratos-email-status/<str:email>/<str:status>/', viewsets.ContratosEmailStatusViewSet.as_view({'get': 'list'}), name='contratos-email-status'),
   path('contratos-vendedor-email-status/<str:email>/<str:status>/', viewsets.ContratosVendedorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email-status'),
   path('contratos-comprador-email-status/<str:email>/<str:status>/', viewsets.ContratosCompradorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-comprador-email-status'),
+  path('dashboard/<str:email>', viewsets.DashBoardViewSet.as_view({'get': 'list'}), name='dashboard'),
   path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
   path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + router.urls

@@ -7,6 +7,7 @@ from rest_framework.views import Response
 from django.shortcuts import get_object_or_404
 from django.core import paginator
 from datetime import datetime, date, timedelta
+from django.db import models
 from .serializers import (
     PessoasModelSerializer,
     ContratoParcelasModelSerializer,
@@ -217,6 +218,46 @@ class ContratosCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
             
         response.data['results'] = queryset_contratos_serialized
         return response
+    
+class DashBoardViewSet(viewsets.ViewSet):
+    def list(self, request, email):
+        #! Quantidade de todos os contratos da pessoa
+        try:
+            pessoa = Pessoas.objects.get(email=email)
+        except Pessoas.DoesNotExist:
+            return Response({'error': 'Pessoa não encontrada'})
+        contratos_vendedor_queryset = Contratos.objects.filter(
+            vendedor=pessoa,
+        )
+        
+        contratos_comprador_queryset = Contratos.objects.filter(
+            comprador=pessoa
+        )
+        
+        queryset = {
+            "quantidade_de_contratos": contratos_vendedor_queryset.count(),
+            "total_dos_contratos": contratos_vendedor_queryset.aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+            "vendas_confirmadas": {
+                "quantidade" :contratos_vendedor_queryset.filter(status='confirmado').count(),
+                "total": contratos_vendedor_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+            },
+            "vendas_em_acao_judicial": {
+                "quantidade": contratos_vendedor_queryset.filter(status='acao_judicial').count(),
+                "total": contratos_vendedor_queryset.filter(status='acao_judicial').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+            },
+            "recuperacao_de_credito": {
+                "quantidade": contratos_vendedor_queryset.filter(status='pendente').count(),
+                "total": contratos_vendedor_queryset.filter(status='pendente').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum']
+                },
+            "compras_confirmadas": {
+                "quantidade": contratos_comprador_queryset.filter(status='confirmado').count(),
+                "total": contratos_comprador_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum']
+            }
+            
+        }
+        
+        queryset['total_vendas_credito_confirmadas_judicial'] = queryset['vendas_confirmadas']['total'] + queryset['vendas_em_acao_judicial']['total'] + queryset['recuperacao_de_credito']['total']
+        return Response(queryset)
 
 class ConsultaJuridicoViewSet(viewsets.ViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
