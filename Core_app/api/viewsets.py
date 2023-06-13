@@ -86,7 +86,7 @@ class ContratosCompradorEmailViewSet(viewsets.ViewSet):
             
         queryset_serialized = {
             'contratos': contratos_serialized
-		}
+        }
             
         return Response(queryset_serialized)
     
@@ -109,7 +109,27 @@ class ContratosCompradorViewSet(viewsets.ViewSet):
         queryset_serialized = ContratosModelSerializer(queryset)
         return Response(queryset_serialized.data)
     
-
+class ContratosEmailStatusViewSet(viewsets.ViewSet):
+    
+    def list(self, request, email:str, status:str):
+        queryset_contratos = Contratos.objects.filter(
+            vendedor=Pessoas.objects.get(email=email),
+               status=status
+        )
+        queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
+        
+        for contrato in queryset_contratos_serialized:
+            parcelas_queryset = ContratoParcelas.objects.filter(
+                contratos=contrato['id'])
+            contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
+            
+        queryset_serialized = {
+            'contratos': queryset_contratos_serialized
+        }
+        
+        return Response(queryset_serialized)
+        
 
 class ConsultaJuridicoViewSet(viewsets.ViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
