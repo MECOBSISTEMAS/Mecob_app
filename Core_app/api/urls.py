@@ -16,12 +16,14 @@ router.register('contratos-comprador-email/seu-email-aqui', viewsets.ContratosCo
 router.register('consulta-juridico', viewsets.ConsultaJuridicoViewSet, basename='consulta-juridico')
 router.register('recuperacao-credito', viewsets.RecuperacaoCreditoViewSet, basename='recuperacao-credito')
 router.register('contratos-email-status/seu-email-aqui', viewsets.ContratosEmailStatusViewSet, basename='contratos-email-status')
-router.register('contratos-email-status-model/seu-email-aqui', viewsets.ContratosEmailStatusModelViewSet, basename='contratos-email-status-model')
+router.register('contratos-vendedor-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosVendedorEmailStatusModelViewSet, basename='contratos-vendedor-email-status')
+router.register('contratos-comprador-email-status/seu-email-aqui/status-do-contrato', viewsets.ContratosCompradorEmailStatusModelViewSet, basename='contratos-comprador-email-status')
 urlpatterns = [
   path('contratos-vendedor-email/<str:email>/', viewsets.ContratosVendedorEmailViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email'),
   path('contratos-comprador-email/<str:email>/', viewsets.ContratosCompradorEmailViewSet.as_view({'get': 'list'}), name='contratos-comprador-email'),
   path('contratos-email-status/<str:email>/<str:status>/', viewsets.ContratosEmailStatusViewSet.as_view({'get': 'list'}), name='contratos-email-status'),
-  path('contratos-email-status-model/<str:email>/<str:status>/', viewsets.ContratosEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-email-status-model'),
+  path('contratos-vendedor-email-status/<str:email>/<str:status>/', viewsets.ContratosVendedorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email-status'),
+  path('contratos-comprador-email-status/<str:email>/<str:status>/', viewsets.ContratosCompradorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-comprador-email-status'),
   path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
   path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + router.urls
