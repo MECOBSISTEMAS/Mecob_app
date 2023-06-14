@@ -5,6 +5,7 @@ from rest_framework.authentication import BasicAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from django.core import paginator
 from datetime import datetime, date, timedelta
 from django.db import models
@@ -312,6 +313,20 @@ class DashBoardViewSet(viewsets.ViewSet):
         queryset['total_vendas_credito_confirmadas_judicial'] = queryset['vendas_confirmadas']['total'] + queryset['vendas_em_acao_judicial']['total'] + queryset['recuperacao_de_credito']['total'] + queryset['compras_confirmadas']['total']
         queryset['quantidade_total_vendas_credito_confirmadas_judiciais'] = queryset['vendas_confirmadas']['quantidade'] + queryset['vendas_em_acao_judicial']['quantidade'] + queryset['recuperacao_de_credito']['quantidade'] + queryset['compras_confirmadas']['quantidade']
         return Response(queryset)
+
+class RegistroUsuarioViewSet(viewsets.ViewSet):
+    def list(self, request, email, password):
+        try:
+            pessoa = Pessoas.objects.get(email=email)
+            User.objects.create_user(username=email, password=password).save()
+            return Response({'success': 'Usuário criado com sucesso'})
+        except Pessoas.DoesNotExist:
+            return Response({'error': 'Não há nenuma pessoa com o email no banco de dados'})
+        except Exception as e:
+            return Response({'error': e})
+    def retrive(self, request):
+        return Response({'error': 'Método não permitido, forneça o email da pessoa no endpoint'})
+            
 
 class ConsultaJuridicoViewSet(viewsets.ViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
