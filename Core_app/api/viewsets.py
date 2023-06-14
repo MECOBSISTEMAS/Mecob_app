@@ -318,8 +318,11 @@ class RegistroUsuarioViewSet(viewsets.ViewSet):
     def list(self, request, email, password):
         try:
             pessoa = Pessoas.objects.get(email=email)
-            User.objects.create_user(username=email, password=password).save()
-            return Response({'success': 'Usuário criado com sucesso'})
+            if User.objects.filter(username=email).exists():
+                return Response({'error': 'Usuário já existe'})
+            else:
+                User.objects.create_user(username=email, password=password).save()
+                return Response({'success': 'Usuário criado com sucesso'})
         except Pessoas.DoesNotExist:
             return Response({'error': 'Não há nenuma pessoa com o email no banco de dados'})
         except Exception as e:
