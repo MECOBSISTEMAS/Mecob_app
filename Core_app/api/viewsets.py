@@ -4,6 +4,7 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
+from dj_rest_auth.views import LoginView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.core import paginator
@@ -22,6 +23,17 @@ from ..existing_models import (
     Contratos,
     Eventos,
 )
+
+
+#* retorne mensagem SIM caso o usuario esteja autenticado e NÂO caso dê qualquer falha
+class CustomLoginView(LoginView):
+    def get_response(self):
+        orginal_response = super().get_response()
+        if orginal_response.status_code == 200:
+            orginal_response.data['is_authenticated'] = True
+        else:
+            orginal_response.data['is_authenticated'] = False
+        return orginal_response
 
 class PessoasModelViewSet(viewsets.ModelViewSet):
     #como mudar de pagina
