@@ -28,14 +28,20 @@ from ..existing_models import (
 #* retorne mensagem SIM caso o usuario esteja autenticado e NÂO caso dê qualquer falha
 class CustomLoginView(LoginView):
     def get_response(self):
-        orginal_response = super().get_response()
-        if orginal_response.status_code == 200:
-            orginal_response.data['is_authenticated'] = True
+        original_response = super().get_response()
+        if original_response.status_code == 200:
+            original_response.data['is_authenticated'] = True
         else:
-            orginal_response.data['is_authenticated'] = False
+            original_response.data['is_authenticated'] = False
         #retorne o username que foi usado para logar
-        orginal_response.data['username'] = self.request.data['username']
-        return orginal_response
+        original_response.data['username'] = self.request.data['username']
+        try:
+            original_response.data['nome'] = PessoasModelSerializer(Pessoas.objects.get(email=self.request.data['username'])).data['nome']
+        except Pessoas.DoesNotExist:
+            original_response.data['nome'] = 'Nenhuma pessoa encontrada com esse email'
+        except Exception as e:
+            original_response.data['nome'] = e
+        return original_response
 
 class PessoasModelViewSet(viewsets.ModelViewSet):
     #como mudar de pagina
