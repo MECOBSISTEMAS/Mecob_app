@@ -33,6 +33,8 @@ class CustomLoginView(LoginView):
             orginal_response.data['is_authenticated'] = True
         else:
             orginal_response.data['is_authenticated'] = False
+        #retorne o username que foi usado para logar
+        orginal_response.data['username'] = self.request.data['username']
         return orginal_response
 
 class PessoasModelViewSet(viewsets.ModelViewSet):
@@ -165,7 +167,7 @@ class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset().filter(
             vendedor=Pessoas.objects.get(email=email),
             status=status
-        )
+        ).order_by('-dt_contrato')
         return queryset
     
     def list(self, request, *args, **kwargs):
@@ -206,7 +208,7 @@ class ContratosParcelasCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset().filter(
             comprador=Pessoas.objects.get(email=email),
             status=status
-        )
+        ).order_by('-dt_contrato')
         return queryset
     
     def list(self, request, *args, **kwargs):
