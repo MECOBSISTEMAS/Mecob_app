@@ -42,6 +42,10 @@ class CustomLoginView(LoginView):
         except Exception as e:
             original_response.data['nome'] = e
         return original_response
+    
+
+
+
 
 class PessoasModelViewSet(viewsets.ModelViewSet):
     #como mudar de pagina

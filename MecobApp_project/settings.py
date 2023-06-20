@@ -138,7 +138,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     #? configuração da paginação por elementos
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    #'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'Core_app.api.pagination.CustomPageNumberPagination',
     'PAGE_SIZE': 10,  # Número de elementos por página
 }
 
