@@ -42,9 +42,23 @@ class CustomLoginView(LoginView):
         except Exception as e:
             original_response.data['nome'] = e
         return original_response
-    
 
 
+class ResetarSenhaViewSet(viewsets.ViewSet):
+    """ essa função tem por objetivo resetar a senha do usuario,
+     passando o argumento email e senha na url  """
+    def list(self, request, email, password):
+        try:
+            user = User.objects.get(username=email)
+            user.set_password(password)
+            user.save()
+            return Response({'success': 'Senha resetada com sucesso'})
+        except User.DoesNotExist:
+            return Response({'error': 'Usuário não encontrado'})
+        except Exception as e:
+            return Response({'error': e})
+    def retrive(self, request):
+        return Response({'error': 'Método não permitido, forneça o email da pessoa e o password no endpoint'})
 
 
 class PessoasModelViewSet(viewsets.ModelViewSet):
