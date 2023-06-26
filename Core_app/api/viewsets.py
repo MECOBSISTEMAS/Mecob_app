@@ -329,6 +329,8 @@ class DashBoardViewSet(viewsets.ViewSet):
         )
         
         queryset = {
+            "cliente": pessoa.nome,
+            "id": pessoa.id,
             "quantidade_de_contratos": contratos_vendedor_queryset.count(),
             "total_dos_contratos": contratos_vendedor_queryset.aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
             "vendas_confirmadas": {
