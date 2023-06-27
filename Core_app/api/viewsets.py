@@ -8,6 +8,8 @@ from dj_rest_auth.views import LoginView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.core import paginator
+import locale
+
 from datetime import datetime, date, timedelta
 from django.db import models
 from .serializers import (
@@ -24,6 +26,7 @@ from ..existing_models import (
     Eventos,
 )
 
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 #* retorne mensagem SIM caso o usuario esteja autenticado e NÂO caso dê qualquer falha
 class CustomLoginView(LoginView):
@@ -336,24 +339,32 @@ class DashBoardViewSet(viewsets.ViewSet):
             "vendas_confirmadas": {
                 "quantidade" :contratos_vendedor_queryset.filter(status='confirmado').count(),
                 "total": contratos_vendedor_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+                #no campo abaixo quero retornar um string do valor total em reais formatado em dinheiro, colocando pontos e virgulas nas casas decimais
+                "total_em_real": locale.currency(contratos_vendedor_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None)
             },
             "vendas_em_acao_judicial": {
                 "quantidade": contratos_vendedor_queryset.filter(status='acao_judicial').count(),
                 "total": contratos_vendedor_queryset.filter(status='acao_judicial').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+                "total_em_real": locale.currency(contratos_vendedor_queryset.filter(status='acao_judicial').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None)
             },
             "recuperacao_de_credito": {
                 "quantidade": contratos_vendedor_queryset.filter(status='pendente').count(),
-                "total": contratos_vendedor_queryset.filter(status='pendente').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum']
+                "total": contratos_vendedor_queryset.filter(status='pendente').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+                "total_em_real": locale.currency(contratos_vendedor_queryset.filter(status='pendente').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None),
                 },
             "compras_confirmadas": {
                 "quantidade": contratos_comprador_queryset.filter(status='confirmado').count(),
-                "total": contratos_comprador_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum']
+                "total": contratos_comprador_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+                "total_em_real": locale.currency(contratos_comprador_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None),
             }
             
         }
         
         queryset['total_vendas_credito_confirmadas_judicial'] = queryset['vendas_confirmadas']['total'] + queryset['vendas_em_acao_judicial']['total'] + queryset['recuperacao_de_credito']['total'] + queryset['compras_confirmadas']['total']
         queryset['quantidade_total_vendas_credito_confirmadas_judiciais'] = queryset['vendas_confirmadas']['quantidade'] + queryset['vendas_em_acao_judicial']['quantidade'] + queryset['recuperacao_de_credito']['quantidade'] + queryset['compras_confirmadas']['quantidade']
+        #formatando em real
+        queryset["total_vendas_credito_confirmadas_judicial_em_real"] = locale.currency(queryset['total_vendas_credito_confirmadas_judicial'], grouping=True, symbol=None)
+
         return Response(queryset)
 
 class RegistroUsuarioViewSet(viewsets.ViewSet):
