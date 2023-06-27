@@ -11,7 +11,7 @@ urlpatterns = [
     #acesso aos apps instanciados pelo django
     path('', include('Core_app.urls')),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 if settings.DEBUG:
