@@ -8,6 +8,7 @@ from dj_rest_auth.views import LoginView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.core import paginator
+from django.db.models import Q
 import locale
 
 from datetime import datetime, date, timedelta
@@ -276,9 +277,13 @@ class ContratosVendedorEmailStatusViewSet(viewsets.ViewSet):
             parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
             parcelas_em_falta = parcelas_queryset.count()
             contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
-            if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+            """ if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
                 contrato['status_contrato'] = 'Em atraso'
             elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'A vencer' """
+            if parcelas_queryset.filter(Q(dt_vencimento__lt=datetime.now().date()) & (Q(dt_pagto__isnull=True)) & Q(vl_pagto=0)).exists():
+                contrato['status_contrato'] = 'Em atraso'
+            elif parcelas_queryset.filter(Q(dt_vencimento__gte=datetime.now().date()) & Q(dt_pagto__isnull=True) &  Q(vl_pagto=0)).exists():
                 contrato['status_contrato'] = 'A vencer'
             else:
                 contrato['status_contrato'] = 'Liquidado'
@@ -302,9 +307,13 @@ class ContratosCompradorEmailStatusViewSet(viewsets.ViewSet):
             parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
             parcelas_em_falta = parcelas_queryset.count()
             contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
-            if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+            """ if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+                contrato['status_contrato'] = 'Em atraso' """
+            """ para saber se o contrato esta em atraso precisa seguir os seguintes criterios:
+              """
+            if parcelas_queryset.filter(Q(dt_vencimento__lt=datetime.now().date()) & (Q(dt_pagto__isnull=True)) & Q(vl_pagto=0)).exists():
                 contrato['status_contrato'] = 'Em atraso'
-            elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_credito__isnull=True, vl_pagto=0).exists():
+            elif parcelas_queryset.filter(Q(dt_vencimento__gte=datetime.now().date()) & Q(dt_pagto__isnull=True) &  Q(vl_pagto=0)).exists():
                 contrato['status_contrato'] = 'A vencer'
             else:
                 contrato['status_contrato'] = 'Liquidado'
