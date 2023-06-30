@@ -100,7 +100,7 @@ class ContratosVendedorEmailViewSet(viewsets.ViewSet):
         contratos_queryset = Contratos.objects.filter(
             vendedor=Pessoas.objects.get(email=email),
             status='confirmado'
-        )
+        ).order_by('-dt_contrato')
         
         contratos_serialized = ContratosModelSerializer(contratos_queryset, many=True).data
 
@@ -299,7 +299,7 @@ class ContratosCompradorEmailStatusViewSet(viewsets.ViewSet):
         queryset_contratos = Contratos.objects.filter(
             comprador=Pessoas.objects.get(email=email),
                status=status
-        )
+        ).order_by('-dt_contrato')
         queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
