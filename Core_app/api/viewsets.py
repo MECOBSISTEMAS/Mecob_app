@@ -345,6 +345,7 @@ class DashBoardViewSet(viewsets.ViewSet):
             "id": pessoa.id,
             "quantidade_de_contratos": contratos_vendedor_queryset.count(),
             "total_dos_contratos": contratos_vendedor_queryset.aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
+            "total_dos_contratos_em_real": locale.currency(contratos_vendedor_queryset.aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None),
             "vendas_confirmadas": {
                 "quantidade" :contratos_vendedor_queryset.filter(status='confirmado').count(),
                 "total": contratos_vendedor_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
