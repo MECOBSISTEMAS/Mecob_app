@@ -370,8 +370,8 @@ class DashBoardViewSet(viewsets.ViewSet):
             
         }
         
-        queryset['total_vendas_credito_confirmadas_judicial'] = queryset['vendas_confirmadas']['total'] + queryset['vendas_em_acao_judicial']['total'] + queryset['recuperacao_de_credito']['total'] + queryset['compras_confirmadas']['total']
-        queryset['quantidade_total_vendas_credito_confirmadas_judiciais'] = queryset['vendas_confirmadas']['quantidade'] + queryset['vendas_em_acao_judicial']['quantidade'] + queryset['recuperacao_de_credito']['quantidade'] + queryset['compras_confirmadas']['quantidade']
+        queryset['total_vendas_credito_confirmadas_judicial'] = queryset['vendas_confirmadas']['total'] + queryset['vendas_em_acao_judicial']['total'] + queryset['recuperacao_de_credito']['total']
+        queryset['quantidade_total_vendas_credito_confirmadas_judiciais'] = queryset['vendas_confirmadas']['quantidade'] + queryset['vendas_em_acao_judicial']['quantidade'] + queryset['recuperacao_de_credito']['quantidade']
         #formatando em real
         queryset["total_vendas_credito_confirmadas_judicial_em_real"] = locale.currency(queryset['total_vendas_credito_confirmadas_judicial'], grouping=True, symbol=None)
 
