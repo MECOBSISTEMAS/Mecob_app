@@ -343,32 +343,31 @@ class DashBoardViewSet(viewsets.ViewSet):
         queryset = {
             "cliente": pessoa.nome,
             "id": pessoa.id,
-            "quantidade_de_contratos": contratos_vendedor_queryset.count(),
-            "total_dos_contratos": contratos_vendedor_queryset.aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
-            "total_dos_contratos_em_real": locale.currency(contratos_vendedor_queryset.aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None),
+            "quantidade_de_contratos": contratos_vendedor_queryset.count() or 0,
+            "total_dos_contratos": contratos_vendedor_queryset.aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'] or 0,
             "vendas_confirmadas": {
-                "quantidade" :contratos_vendedor_queryset.filter(status='confirmado').count(),
-                "total": contratos_vendedor_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
-                #no campo abaixo quero retornar um string do valor total em reais formatado em dinheiro, colocando pontos e virgulas nas casas decimais
-                "total_em_real": locale.currency(contratos_vendedor_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None)
+                "quantidade" :contratos_vendedor_queryset.filter(status='confirmado').count() or 0,
+                "total": contratos_vendedor_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'] or 0,
             },
             "vendas_em_acao_judicial": {
-                "quantidade": contratos_vendedor_queryset.filter(status='acao_judicial').count(),
-                "total": contratos_vendedor_queryset.filter(status='acao_judicial').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
-                "total_em_real": locale.currency(contratos_vendedor_queryset.filter(status='acao_judicial').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None)
+                "quantidade": contratos_vendedor_queryset.filter(status='acao_judicial').count() or 0,
+                "total": contratos_vendedor_queryset.filter(status='acao_judicial').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'] or 0,
             },
             "recuperacao_de_credito": {
-                "quantidade": contratos_vendedor_queryset.filter(status='pendente').count(),
-                "total": contratos_vendedor_queryset.filter(status='pendente').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
-                "total_em_real": locale.currency(contratos_vendedor_queryset.filter(status='pendente').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None),
-                },
+                "quantidade": contratos_vendedor_queryset.filter(status='pendente').count() or 0,
+                "total": contratos_vendedor_queryset.filter(status='pendente').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'] or 0,
+            },
             "compras_confirmadas": {
-                "quantidade": contratos_comprador_queryset.filter(status='confirmado').count(),
-                "total": contratos_comprador_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'],
-                "total_em_real": locale.currency(contratos_comprador_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'], grouping=True, symbol=None),
-            }
-            
+                "quantidade": contratos_comprador_queryset.filter(status='confirmado').count() or 0,
+                "total": contratos_comprador_queryset.filter(status='confirmado').aggregate(models.Sum('vl_contrato'))['vl_contrato__sum'] or 0,
+            },
         }
+
+        queryset["total_dos_contratos_em_real"] = locale.currency(queryset['total_dos_contratos'], grouping=True, symbol=None)
+        queryset["vendas_confirmadas"]["total_em_real"] = locale.currency(queryset['vendas_confirmadas']['total'], grouping=True, symbol=None)
+        queryset["vendas_em_acao_judicial"]["total_em_real"] = locale.currency(queryset['vendas_em_acao_judicial']['total'], grouping=True, symbol=None)
+        queryset["recuperacao_de_credito"]["total_em_real"] = locale.currency(queryset['recuperacao_de_credito']['total'], grouping=True, symbol=None)
+        queryset["compras_confirmadas"]["total_em_real"] = locale.currency(queryset['compras_confirmadas']['total'], grouping=True, symbol=None)
         
         queryset['total_vendas_credito_confirmadas_judicial'] = queryset['vendas_confirmadas']['total'] + queryset['vendas_em_acao_judicial']['total'] + queryset['recuperacao_de_credito']['total']
         queryset['quantidade_total_vendas_credito_confirmadas_judiciais'] = queryset['vendas_confirmadas']['quantidade'] + queryset['vendas_em_acao_judicial']['quantidade'] + queryset['recuperacao_de_credito']['quantidade']
