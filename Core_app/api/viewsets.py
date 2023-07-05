@@ -183,7 +183,7 @@ class ContratosEmailStatusViewSet(viewsets.ViewSet):
         return Response(queryset_contratos_serialized)
     
 class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
-    queryset = Contratos.objects.all().exclude(status='excluido')
+    queryset = Contratos.objects.all().order_by('-id').exclude(status='excluido')
     serializer_class = ContratosModelSerializer
     pagination_class = PageNumberPagination
     filterset_fields = ['vendedor', 'status']  # Campos para filtragem
@@ -224,7 +224,7 @@ class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
         return response
         
 class ContratosParcelasCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
-    queryset = Contratos.objects.all().exclude(status='excluido')
+    queryset = Contratos.objects.all().order_by('-id').exclude(status='excluido')
     serializer_class = ContratosModelSerializer
     pagination_class = PageNumberPagination
     filterset_fields = ['comprador', 'status']  # Campos para filtragem
@@ -269,7 +269,7 @@ class ContratosVendedorEmailStatusViewSet(viewsets.ViewSet):
         queryset_contratos = Contratos.objects.filter(
             vendedor=Pessoas.objects.get(email=email),
                status=status
-        ).exclude(status='excluido')
+        ).order_by('-id').exclude(status='excluido')
         queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
@@ -299,7 +299,7 @@ class ContratosCompradorEmailStatusViewSet(viewsets.ViewSet):
         queryset_contratos = Contratos.objects.filter(
             comprador=Pessoas.objects.get(email=email),
                status=status
-        ).order_by('-dt_contrato').exclude(status='excluido')
+        ).order_by('-id').exclude(status='excluido')
         queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
