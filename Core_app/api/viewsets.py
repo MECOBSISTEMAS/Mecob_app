@@ -183,7 +183,7 @@ class ContratosEmailStatusViewSet(viewsets.ViewSet):
         return Response(queryset_contratos_serialized)
     
 class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
-    queryset = Contratos.objects.all()
+    queryset = Contratos.objects.all().exclude(status='excluido')
     serializer_class = ContratosModelSerializer
     pagination_class = PageNumberPagination
     filterset_fields = ['vendedor', 'status']  # Campos para filtragem
@@ -224,7 +224,7 @@ class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
         return response
         
 class ContratosParcelasCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
-    queryset = Contratos.objects.all()
+    queryset = Contratos.objects.all().exclude(status='excluido')
     serializer_class = ContratosModelSerializer
     pagination_class = PageNumberPagination
     filterset_fields = ['comprador', 'status']  # Campos para filtragem
@@ -269,7 +269,7 @@ class ContratosVendedorEmailStatusViewSet(viewsets.ViewSet):
         queryset_contratos = Contratos.objects.filter(
             vendedor=Pessoas.objects.get(email=email),
                status=status
-        )
+        ).exclude(status='excluido')
         queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
@@ -299,7 +299,7 @@ class ContratosCompradorEmailStatusViewSet(viewsets.ViewSet):
         queryset_contratos = Contratos.objects.filter(
             comprador=Pessoas.objects.get(email=email),
                status=status
-        ).order_by('-dt_contrato')
+        ).order_by('-dt_contrato').exclude(status='excluido')
         queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
@@ -334,11 +334,11 @@ class DashBoardViewSet(viewsets.ViewSet):
             return Response({'error': 'Pessoa não encontrada'})
         contratos_vendedor_queryset = Contratos.objects.filter(
             vendedor=pessoa,
-        )
+        ).exclude(status='excluido')
         
         contratos_comprador_queryset = Contratos.objects.filter(
             comprador=pessoa
-        )
+        ).exclude(status='excluido')
         
         queryset = {
             "cliente": pessoa.nome,
