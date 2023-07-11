@@ -205,6 +205,9 @@ class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
+            #faça com que o campo dt_vencimento seja exposta da seguinte forma: dd/mm/yyyyy
+            for parcela in parcelas_queryset:
+                parcela['dt_vencimento'] = parcela['dt_vencimento'].strftime('%d/%m/%Y')
             parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
             parcelas_em_falta = parcelas_queryset.count()
             contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
@@ -248,6 +251,8 @@ class ContratosParcelasCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
                 contratos=contrato['id'])
             parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
             parcelas_em_falta = parcelas_queryset.count()
+            for parcela in parcelas_queryset:
+                parcela['dt_vencimento'] = parcela['dt_vencimento'].strftime('%d/%m/%Y')
             contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
             contrato['vendedor'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['vendedor'])).data
             if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_pagto__isnull=True).exists():
