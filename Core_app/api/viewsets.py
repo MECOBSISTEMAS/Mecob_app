@@ -222,6 +222,7 @@ class ContratosParcelasVendedorEmailStatusModelViewSet(viewsets.ModelViewSet):
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             for parcela in contrato['parcelas']:
                 parcela['dt_vencimento'] = datetime.strptime(parcela['dt_vencimento'], '%Y-%m-%d').strftime('%d/%m/%Y')
+                parcela['id'] = parcela['nu_parcela']
             
         response.data['results'] = queryset_contratos_serialized
         return response
@@ -265,6 +266,7 @@ class ContratosParcelasCompradorEmailStatusModelViewSet(viewsets.ModelViewSet):
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             for parcela in contrato['parcelas']:
                 parcela['dt_vencimento'] = datetime.strptime(parcela['dt_vencimento'], '%Y-%m-%d').strftime('%d/%m/%Y')
+                parcela['id'] = parcela['nu_parcela']
             
         response.data['results'] = queryset_contratos_serialized
         return response
