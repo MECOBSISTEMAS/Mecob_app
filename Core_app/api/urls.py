@@ -23,8 +23,11 @@ router.register('contratos-comprador-email-status/seu-email-aqui/status-do-contr
 router.register('dashboard/seu-email-aqui', viewsets.DashBoardViewSet, basename='dashboard')
 router.register('registro-usuario/email/password', viewsets.RegistroUsuarioViewSet, basename='registro-usuario')
 router.register('resetar-senha/email/senha', viewsets.ResetarSenhaViewSet, basename='resetar-senha')
+
 urlpatterns = [
   path('custom-login/', viewsets.CustomLoginView.as_view(), name='custom-login'),
+  path('execute_query_sql_function/', viewsets.execute_query_sql, name='execute_query_sql'),
+  path('execute_query_sql_class/', viewsets.ExecuteQuerySqlViewSet.as_view({'post':'execute_query_sql'}), name='execute_query_sql'),
   path('contratos-vendedor-email/<str:email>/', viewsets.ContratosVendedorEmailViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email'),
   path('contratos-comprador-email/<str:email>/', viewsets.ContratosCompradorEmailViewSet.as_view({'get': 'list'}), name='contratos-comprador-email'),
   path('contratos-email-status/<str:email>/<str:status>/', viewsets.ContratosEmailStatusViewSet.as_view({'get': 'list'}), name='contratos-email-status'),

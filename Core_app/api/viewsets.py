@@ -4,11 +4,14 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
+from rest_framework.decorators import api_view, action
 from dj_rest_auth.views import LoginView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.core import paginator
 from django.db.models import Q
+from django.db.models.query import QuerySet
+from django.db import connection
 import locale
 
 from datetime import datetime, date, timedelta
@@ -47,6 +50,33 @@ class CustomLoginView(LoginView):
             original_response.data['nome'] = e
         return original_response
 
+@api_view(['POST'])
+def execute_query_sql(request):
+    try:
+        body = request.data.get('body', {})
+        sql = body.get('sql', '')
+
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            queryset = cursor.fetchall()
+            return Response(queryset)
+    except Exception as e:
+        return Response({'error': str(e)})
+    
+class ExecuteQuerySqlViewSet(viewsets.ViewSet):
+    @action(methods=['post'], detail=False)
+    def execute_query_sql(self, request):
+        try:
+            body = request.data
+            print(body)
+            sql = body.get('sql', '')
+
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                queryset = cursor.fetchall()
+                return Response(queryset)
+        except Exception as e:
+            return Response({'error': str(e)})
 
 class ResetarSenhaViewSet(viewsets.ViewSet):
     """ essa função tem por objetivo resetar a senha do usuario,
@@ -63,6 +93,7 @@ class ResetarSenhaViewSet(viewsets.ViewSet):
             return Response({'error': e})
     def retrive(self, request):
         return Response({'error': 'Método não permitido, forneça o email da pessoa e o password no endpoint'})
+
 
 
 class PessoasModelViewSet(viewsets.ModelViewSet):
