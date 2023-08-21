@@ -68,7 +68,6 @@ class ExecuteQuerySqlViewSet(viewsets.ViewSet):
     def execute_query_sql(self, request):
         try:
             body = request.data
-            print(body)
             sql = body.get('sql', '')
 
             with connection.cursor() as cursor:
@@ -193,7 +192,6 @@ class ContratosEmailStatusViewSet(viewsets.ViewSet):
                status=status
         )
         queryset_contratos_serialized = ContratosModelSerializer(queryset_contratos, many=True).data
-        print(queryset_contratos.count())
         for contrato in queryset_contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
