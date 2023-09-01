@@ -26,6 +26,16 @@ class ContratosModelSerializer(serializers.ModelSerializer):
         'status', 'eventos', 'comprador', 'vendedor']
         #fields = '__all__'
 
+class ContratoParcelasAllModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContratoParcelas
+        fields = '__all__'
+  
+class ContratosAllModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contratos
+        fields = '__all__'
+
 class EventosModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Eventos
