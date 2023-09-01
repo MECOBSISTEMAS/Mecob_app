@@ -21,6 +21,8 @@ from .serializers import (
     ContratoParcelasModelSerializer,
     ContratosModelSerializer,
     EventosModelSerializer,
+    ContratosAllModelSerializer,
+    ContratoParcelasAllModelSerializer,
 )
 
 from ..existing_models import (
@@ -62,7 +64,21 @@ def execute_query_sql(request):
             return Response(queryset)
     except Exception as e:
         return Response({'error': str(e)})
-    
+
+class ContratosAllContratoParcelasAllViewSet(viewsets.ViewSet):
+    """ essa função tem por objetivo retornar todos os contratos e suas respectivas parcelas serializadas"""
+    def list(self, request):
+        message:str = "Passe o id do contrato na url"
+        return Response(message)
+
+    """ essa função tem por objetivo retornar o contrato com base no id e retornar todos os campos do contrato e suas respectivas parcelas serializadas"""
+    def retrieve(self, request, contrato_id):
+        contrato_queryset = Contratos.objects.get(id=contrato_id)
+        contrato_serialized = ContratosAllModelSerializer(contrato_queryset, many=False).data
+        parcelas_queryset = ContratoParcelas.objects.filter(
+            contratos=contrato_id)
+        contrato_serialized['parcelas'] = ContratoParcelasAllModelSerializer(parcelas_queryset, many=True).data
+        return Response(contrato_serialized)
 class ExecuteQuerySqlViewSet(viewsets.ViewSet):
     @action(methods=['post'], detail=False)
     def execute_query_sql(self, request):

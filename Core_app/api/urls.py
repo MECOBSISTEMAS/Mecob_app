@@ -23,6 +23,7 @@ router.register('contratos-comprador-email-status/seu-email-aqui/status-do-contr
 router.register('dashboard/seu-email-aqui', viewsets.DashBoardViewSet, basename='dashboard')
 router.register('registro-usuario/email/password', viewsets.RegistroUsuarioViewSet, basename='registro-usuario')
 router.register('resetar-senha/email/senha', viewsets.ResetarSenhaViewSet, basename='resetar-senha')
+router.register('ContratosAllContratoParcelasAllViewSet', viewsets.ContratosAllContratoParcelasAllViewSet, basename='ContratosAllContratoParcelasAllModelViewSet')
 
 urlpatterns = [
   path('custom-login/', viewsets.CustomLoginView.as_view(), name='custom-login'),
@@ -38,6 +39,9 @@ urlpatterns = [
   path('resetar-senha/<str:email>/<str:password>/', viewsets.ResetarSenhaViewSet.as_view({'get': 'list'}), name='resetar-senha'),
   path('dashboard/<str:email>/', viewsets.DashBoardViewSet.as_view({'get': 'list'}), name='dashboard'),
   path('registro-usuario/<str:email>/<str:password>/', viewsets.RegistroUsuarioViewSet.as_view({'get': 'list'}), name='registro-usuario'),
+  #router.register('ContratosAllContratoParcelasAllModelViewSet', viewsets.ContratosAllContratoParcelasAllModelViewSet, basename='ContratosAllContratoParcelasAllModelViewSet')
+  path('ContratosAllContratoParcelasAllViewSet/<str:contrato_id>/', viewsets.ContratosAllContratoParcelasAllViewSet.as_view({'get': 'retrieve'}), name='ContratosAllContratoParcelasAllModelViewSet'),
+  #!Rotas para autenticação JWT
   path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
   path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + router.urls
