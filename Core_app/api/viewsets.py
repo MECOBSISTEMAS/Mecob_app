@@ -152,6 +152,12 @@ class ContratosVendedorEmailQuantidadeViewSet(viewsets.ViewSet):
         for contrato in contratos_serialized:
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
+            if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_pagto__isnull=True).exists():
+                contrato['status_contrato'] = 'Em atraso'
+            elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_pagto__isnull=True).exists():
+                contrato['status_contrato'] = 'A vencer'
+            else:
+                contrato['status_contrato'] = 'Liquidado'
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
             contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
         return Response(contratos_serialized)
