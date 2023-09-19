@@ -150,17 +150,22 @@ class ContratosVendedorEmailQuantidadeViewSet(viewsets.ViewSet):
         ).order_by('-dt_contrato')[:quantidade]
         contratos_serialized = ContratosModelSerializer(contratos_queryset, many=True).data
         for contrato in contratos_serialized:
+            contrato['comprador'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['comprador'])).data
+            contrato['vendedor'] = PessoasModelSerializer(Pessoas.objects.get(id=contrato['vendedor'])).data
             parcelas_queryset = ContratoParcelas.objects.filter(
                 contratos=contrato['id'])
+            parcelas_pagas = parcelas_queryset.filter(vl_pagto__gt=0).count()
+            parcelas_em_falta = parcelas_queryset.count()
             if parcelas_queryset.filter(dt_vencimento__lt=datetime.now().date(), dt_pagto__isnull=True).exists():
                 contrato['status_contrato'] = 'Em atraso'
             elif parcelas_queryset.filter(dt_vencimento__gte=datetime.now().date(), dt_pagto__isnull=True).exists():
                 contrato['status_contrato'] = 'A vencer'
             else:
                 contrato['status_contrato'] = 'Liquidado'
+            contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
             contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
-            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']), many=True).data
-        return Response(contratos_serialized)
+            contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']).first(), many=False).data
+        return Response({"results":contratos_serialized})
 
     
 class ContratosVendedorEmailViewSet(viewsets.ViewSet):
