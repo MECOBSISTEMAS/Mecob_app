@@ -143,10 +143,10 @@ class ContratosVendedorViewSet(viewsets.ViewSet):
 class ContratosVendedorEmailQuantidadeViewSet(viewsets.ViewSet):
     """ esse endpoint ira servir todos os contratos da pessoa assim que passar o email e assim tambem a quantidade
      de contratos que ele ira solicatar pela url utilizar a paginação """
-    def list(self, request, email, quantidade):
+    def list(self, request, email:str, quantidade:int, status:str):
         contratos_queryset = Contratos.objects.filter(
             vendedor=Pessoas.objects.get(email=email),
-            status='confirmado'
+            status=status
         ).order_by('-dt_contrato')[:quantidade]
         contratos_serialized = ContratosModelSerializer(contratos_queryset, many=True).data
         for contrato in contratos_serialized:
@@ -163,8 +163,11 @@ class ContratosVendedorEmailQuantidadeViewSet(viewsets.ViewSet):
             else:
                 contrato['status_contrato'] = 'Liquidado'
             contrato['parcelas_pagas_e_em_falta'] = f'{parcelas_pagas}/{parcelas_em_falta}'
-            contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data 
+            contrato['parcelas'] = ContratoParcelasModelSerializer(parcelas_queryset, many=True).data
             contrato['eventos'] = EventosModelSerializer(Eventos.objects.filter(id=contrato['eventos']).first(), many=False).data
+            for parcela in contrato['parcelas']:
+                parcela['dt_vencimento'] = datetime.strptime(parcela['dt_vencimento'], '%Y-%m-%d').strftime('%d/%m/%Y')
+                parcela['id'] = parcela['nu_parcela']
         return Response({"results":contratos_serialized})
 
     
