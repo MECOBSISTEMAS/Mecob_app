@@ -25,12 +25,14 @@ router.register('registro-usuario/email/password', viewsets.RegistroUsuarioViewS
 router.register('resetar-senha/email/senha', viewsets.ResetarSenhaViewSet, basename='resetar-senha')
 router.register('ContratosAllContratoParcelasAllViewSet', viewsets.ContratosAllContratoParcelasAllViewSet, basename='ContratosAllContratoParcelasAllModelViewSet')
 router.register('contratos-vendedor-email-quantidade/seu-email-aqui/quantidade/status', viewsets.ContratosVendedorEmailQuantidadeViewSet, basename='contratos-vendedor-email-quantidade')
+router.register('contratos-comprador-email-quantidade/seu-email-aqui/quantidade/status', viewsets.ContratosCompradorEmailQuantidadeViewSet, basename='contratos-comprador-email-quantidade')
 urlpatterns = [
   path('custom-login/', viewsets.CustomLoginView.as_view(), name='custom-login'),
   path('execute_query_sql_function/', viewsets.execute_query_sql, name='execute_query_sql'),
   path('execute_query_sql_class/', viewsets.ExecuteQuerySqlViewSet.as_view({'post':'execute_query_sql'}), name='execute_query_sql'),
   path('contratos-vendedor-email/<str:email>/', viewsets.ContratosVendedorEmailViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email'),
   path('contratos-vendedor-email-quantidade/<str:email>/<int:quantidade>/<str:status>/', viewsets.ContratosVendedorEmailQuantidadeViewSet.as_view({'get': 'list'}), name='contratos-vendedor-email-quantidade'),
+  path('contratos-comprador-email-quantidade/<str:email>/<int:quantidade>/<str:status>/', viewsets.ContratosCompradorEmailQuantidadeViewSet.as_view({'get':'list'}), name='contratos-comprador-email-quantidade'),
   path('contratos-comprador-email/<str:email>/', viewsets.ContratosCompradorEmailViewSet.as_view({'get': 'list'}), name='contratos-comprador-email'),
   path('contratos-email-status/<str:email>/<str:status>/', viewsets.ContratosEmailStatusViewSet.as_view({'get': 'list'}), name='contratos-email-status'),
   path('contratos-parcelas-vendedor-email-status/<str:email>/<str:status>/', viewsets.ContratosParcelasVendedorEmailStatusModelViewSet.as_view({'get': 'list'}), name='contratos-parcelas-vendedor-email-status'),
