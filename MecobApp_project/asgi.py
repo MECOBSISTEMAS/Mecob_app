@@ -1,3 +1,5 @@
+#A pasta MecobApp_project é a parte das configurações da aplicação, o arquivo asgi.py veio por default, ele cuida das requisições assincronas
+
 """
 ASGI config for MecobApp_project project.
 

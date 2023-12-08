@@ -1,3 +1,4 @@
+#Arquivo para configirações sincronas do projeto
 """
 WSGI config for MecobApp_project project.
 

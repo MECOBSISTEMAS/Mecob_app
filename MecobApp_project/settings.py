@@ -1,15 +1,19 @@
-import os
-from pathlib import Path
-import random
-import string
+#Esse arquivo tem configurações principais para o App mecob
+
+#
+import os #biblioteca para manipular arquivos da maquina
+from pathlib import Path #dependencia para manipular as rotas dos arquivos do projeto atual
+import random #dependencia para geração de numeros e caracteres aleatorios
+import string #conjunto de caracteres
 #?importando o dotenv e carregando as variaveis de ambiente
-import dotenv
+import dotenv #importação e das variaveis de ambiente virtual do aruqivo .env
 dotenv.load_dotenv()
 
 gerador_de_caracteres = lambda quantidade: ''.join(random.choices(string.ascii_letters + string.digits, k=quantidade))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+#caso a variavel chamada SECRET_KEY não seja encontrada sera substituido por um valor aleatorio com 32 caracteres
 SECRET_KEY = os.getenv('SECRET_KEY', gerador_de_caracteres(32))
 
 DEBUG = os.getenv('DEBUG') == 'True'
@@ -68,6 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MecobApp_project.wsgi.application'
 
+#Configuração para o banco de dados
 if os.getenv('DB_ENGINE') and os.getenv('DB_ENGINE') == 'mysql':
     DATABASES = {
         'default': {
@@ -79,7 +84,7 @@ if os.getenv('DB_ENGINE') and os.getenv('DB_ENGINE') == 'mysql':
             'PORT': os.getenv('PORT'),
         }
     }
-else:
+else: #caso a variavel de ambiente chamada DB_ENGINE não seja encontrada o projeto sera inciado usando um arquivo SQLite como banco de dados
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -87,7 +92,7 @@ else:
         }
     }
 
-
+#Autenticação exigida ao se cadastrar no projeto, remoção para facilitar a criação do superusuario
 AUTH_PASSWORD_VALIDATORS = [
 ]
 """ {
@@ -107,23 +112,23 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'pt-br' #configuração para a linguagem do projeto, caso achar necessario pode colocar de volta para o padrão: en-us
 
-TIME_ZONE = 'America/Sao_Paulo'
+TIME_ZONE = 'America/Sao_Paulo' #configuração da timezone, horario em que o projeto esta configurado
 
-USE_I18N = True
+USE_I18N = True  #tradução
 
-USE_TZ = True
+USE_TZ = True #confirma a utilização da configuração do timezone
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = 'staticfiles/'
+STATIC_URL = '/static/' #onde sera armazenado os arquivos estaticos
+STATIC_ROOT = 'staticfiles/' #onde sera armazenado os arquivos estaticos em pordução
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = 'media/'
+MEDIA_URL = '/media/' #onde sera armazenado os arquivos de media 
+MEDIA_ROOT = 'media/' #onde sera armazenado os arquivos de media em produção
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -157,7 +162,7 @@ CORS_ORIGIN_WHITELIST = (
 } """
 
 
-
+#Configuração para o envio de email caso o usario solicite o reset-password (enviar o token para o email)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True

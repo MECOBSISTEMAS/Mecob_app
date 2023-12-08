@@ -9,10 +9,10 @@ urlpatterns = [
     #acesso a pagina de administração
     path('admin/', admin.site.urls),
     #acesso a pagina de api de autenticação do django-rest-framework
-    path('api-auth/', include('rest_framework.urls')),
+    path('api-auth/', include('rest_framework.urls')), #rota de autenticação utilizando a configuração nativa do framework
     #acesso aos apps instanciados pelo django
-    path('', include('Core_app.urls')),
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('', include('Core_app.urls')), 
+    path('dj-rest-auth/', include('dj_rest_auth.urls')), #rota de autenticação utilizando a biblioteca dj-rest-auth
     #path('rest-auth/', include('rest_auth.urls')),
     #path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('rest-auth/password/reset/confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
